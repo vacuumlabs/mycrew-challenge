@@ -1,13 +1,20 @@
-import React from 'react'
+import React, {Component} from 'react'
 import {StyleSheet, Text} from 'react-native'
-import {testSecure, testBcrypt} from '../utils'
+import {testRegisterAndLogin, testBcrypt} from '../utils'
 
-testSecure()
-  .then(() => console.log('donesec'))
-  .catch((e) => console.log(e))
+console.log(testRegisterAndLogin)
 
-testBcrypt()
-  .then(() => console.log('donecrypt'))
-  .catch((e) => console.log(e))
+class RegisterScreen extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {}
+  }
 
-export default () => <Text>Hello</Text>
+  componentDidMount = () => {
+    testBcrypt.then(() => console.log('donereg')).catch((e) => console.log(e))
+  }
+
+  render = () => <Text>Hello</Text>
+}
+
+export default RegisterScreen
