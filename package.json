@@ -11,8 +11,13 @@
     "react-native": "0.56.0"
   },
   "devDependencies": {
+    "babel-eslint": "^8.2.6",
     "babel-jest": "23.4.2",
     "babel-preset-react-native": "^5",
+    "eslint": "^5.3.0",
+    "eslint-config-vacuumlabs": "^1.5.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-react": "^7.11.1",
     "jest": "23.5.0",
     "react-test-renderer": "16.4.1"
   },
