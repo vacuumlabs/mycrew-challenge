@@ -1,5 +1,13 @@
 import React, {Component} from 'react'
-import {StyleSheet, Text, Button, View, Platform, ActivityIndicator} from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  Button,
+  View,
+  Platform,
+  ActivityIndicator,
+  NativeModules,
+} from 'react-native'
 import Sound from 'react-native-sound'
 
 import {getCurrentUser} from '../utils'
@@ -16,6 +24,7 @@ class MainScreen extends Component {
   }
 
   componentDidMount = () => {
+    console.log(NativeModules)
     getCurrentUser()
       .then((user) => {
         if (!user) {
@@ -94,6 +103,7 @@ class MainScreen extends Component {
           <Button onPress={this.playButtonPress} title={this.state.isPlaying ? '▊▊' : '▶'} />
         )}
         <Button onPress={this.stopPlayback} title="▇" disabled={!this.state.startedPlaying} />
+        <Button onPress={() => NativeModules.RNTAlert.showAlert()} title="Logout" />
       </View>
     </View>
   )

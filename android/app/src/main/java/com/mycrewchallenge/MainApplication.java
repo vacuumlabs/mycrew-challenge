@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.zmxv.RNSound.RNSoundPackage;
-import guichaguri.trackplayer.TrackPlayer;
 import li.yunqi.rnsecurestorage.RNSecureStoragePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -27,7 +26,6 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new RNSoundPackage(),
-            new TrackPlayer(),
             new RNSecureStoragePackage()
       );
     }
