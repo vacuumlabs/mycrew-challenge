@@ -37,17 +37,21 @@ export const getCurrentUser = async () => {
 
 // assumes we already verified email & password
 export const registerAndLoginUser = async (email, name, pass) => {
+  console.log('registeruser')
+  const lowerCaseMail = email.toLowerCase()
   const users = await getUsers()
   const passHash = await bcryptHashPromise(pass, SALT_ROUNDS)
   const user = {pass: passHash, name}
-  await SecureStorage.setItem('users', JSON.stringify({...users, [email]: user}))
+  await SecureStorage.setItem('users', JSON.stringify({...users, [lowerCaseMail]: user}))
   await SecureStorage.setItem('currentUser', JSON.stringify(user))
 }
 
 export const loginUser = async (email, pass) => {
-  const user = (await getUsers())[email]
+  const lowerCaseMail = email.toLowerCase()
+  const user = (await getUsers())[lowerCaseMail]
   if (!user || !(await bcryptComparePromise(pass, user.pass))) return false
   await SecureStorage.setItem('currentUser', JSON.stringify(user))
+  return true
 }
 
 export const logoutUser = async () => await SecureStorage.removeItem('currentUser')
@@ -62,4 +66,26 @@ export const testRegisterAndLogin = async () => {
   console.log(await getCurrentUser())
   console.log(await loginUser('hu@ha.sk', 'bac0n'))
   console.log(await getCurrentUser())
+}
+
+// validations
+
+// second arg optional, only for register validation
+export const getEmailError = (email, users) => {
+  if (!email) return 'Please enter an email address'
+  const lowerCaseMail = email.toLowerCase()
+  const emailRegex = /^\S+@\S+/
+  if (!emailRegex.test(lowerCaseMail)) return 'Please enter a valid email'
+  if (users && users[lowerCaseMail]) return 'That email is already taken'
+  return false
+}
+
+export const getPasswordError = (pass) => {
+  if (!pass || pass.length < 6) return 'Please enter password with at least 6 characters'
+  return false
+}
+
+export const getNameError = (name) => {
+  if (!name || name.length === 0) return 'Please enter your name'
+  return false
 }

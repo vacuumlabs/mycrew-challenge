@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import Sound from 'react-native-sound'
 
-import {getCurrentUser} from '../utils'
+import {getCurrentUser, logoutUser} from '../utils'
 
 class MainScreen extends Component {
   constructor(props) {
@@ -45,6 +45,7 @@ class MainScreen extends Component {
       (error) => {
         if (error) {
           console.log('failed to load the sound', error)
+          this.setState({networkError: true})
           return
         }
         this.setState({playbackInitDone: true})
@@ -92,19 +93,29 @@ class MainScreen extends Component {
     }
   }
 
+  logout = async () => {
+    await logoutUser()
+    this.props.navigation.replace('LoginScreen')
+    NativeModules.RNTAlert.showAlert()
+  }
+
   // text'll be empty on first render, which shouldn't be something too noticeable
   render = () => (
     <View>
       <Text>{this.state.name ? `Welcome ${this.state.name} to 🦄 paradise!` : ''}</Text>
-      <View>
-        {this.state.startedPlaying && !this.state.playbackInitDone ? (
-          <ActivityIndicator size="small" />
-        ) : (
-          <Button onPress={this.playButtonPress} title={this.state.isPlaying ? '▊▊' : '▶'} />
-        )}
-        <Button onPress={this.stopPlayback} title="▇" disabled={!this.state.startedPlaying} />
-        <Button onPress={() => NativeModules.RNTAlert.showAlert()} title="Logout" />
-      </View>
+      {this.state.networkError ? (
+        <Text>😭 Failed to load the 🦄 song (Network Problems?) 😭 </Text>
+      ) : (
+        <View>
+          {this.state.startedPlaying && !this.state.playbackInitDone ? (
+            <ActivityIndicator size="small" />
+          ) : (
+            <Button onPress={this.playButtonPress} title={this.state.isPlaying ? '▊▊' : '▶'} />
+          )}
+          <Button onPress={this.stopPlayback} title="▇" disabled={!this.state.startedPlaying} />
+        </View>
+      )}
+      <Button onPress={this.logout} title="Logout" />
     </View>
   )
 }
