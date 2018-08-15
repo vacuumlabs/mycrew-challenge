@@ -25,9 +25,15 @@ export const testBcrypt = async () => {
 // - SecureStorage since standard AsyncStorage does not guarantee other apps won't have access to data in it
 // - storing passwords in plaintext tends to be a bad idea
 
-export const getUsers = async () => JSON.parse(await SecureStorage.getItem('users'))
+export const getUsers = async () => {
+  const storageUsers = await SecureStorage.getItem('users')
+  return storageUsers ? JSON.parse(storageUsers) : {}
+}
 
-export const getCurrentUser = async () => JSON.parse(await SecureStorage.getItem('currentUser'))
+export const getCurrentUser = async () => {
+  const storageUser = await SecureStorage.getItem('currentUser')
+  return storageUser && JSON.parse(storageUser)
+}
 
 // assumes we already verified email & password
 export const registerAndLoginUser = async (email, name, pass) => {
@@ -40,12 +46,20 @@ export const registerAndLoginUser = async (email, name, pass) => {
 
 export const loginUser = async (email, pass) => {
   const user = (await getUsers())[email]
-  if (!user || !(await bcryptComparePromise(pass, user.pass, SALT_ROUNDS))) return false
+  if (!user || !(await bcryptComparePromise(pass, user.pass))) return false
   await SecureStorage.setItem('currentUser', JSON.stringify(user))
 }
 
-export const logoutUser = async () => await SecureStorage.setItem('currentUser', undefined)
+export const logoutUser = async () => await SecureStorage.removeItem('currentUser')
 
 export const testRegisterAndLogin = async () => {
   await registerAndLoginUser('hu@ha.sk', 'Hu Ha', 'bac0n')
+  console.log(await getUsers())
+  console.log(await getCurrentUser())
+  await logoutUser()
+  console.log(await getCurrentUser())
+  console.log(await loginUser('hu@ha.sk', 'bacon'))
+  console.log(await getCurrentUser())
+  console.log(await loginUser('hu@ha.sk', 'bac0n'))
+  console.log(await getCurrentUser())
 }

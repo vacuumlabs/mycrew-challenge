@@ -1,8 +1,6 @@
 import React, {Component} from 'react'
 import {StyleSheet, Text} from 'react-native'
-import {testRegisterAndLogin, testBcrypt} from '../utils'
-
-console.log(testRegisterAndLogin)
+import {registerAndLoginUser} from '../utils'
 
 class RegisterScreen extends Component {
   constructor(props) {
@@ -11,7 +9,14 @@ class RegisterScreen extends Component {
   }
 
   componentDidMount = () => {
-    testBcrypt.then(() => console.log('donereg')).catch((e) => console.log(e))
+    registerAndLoginUser('hu@ha.sk', 'Hu Ha', 'bac0n')
+      .then(() => {
+        this.props.navigation.replace('MainScreen')
+      })
+      .catch((e) => {
+        console.log(e)
+        // TODO notify user
+      })
   }
 
   render = () => <Text>Hello</Text>

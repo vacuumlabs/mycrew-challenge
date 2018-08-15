@@ -1,11 +1,13 @@
 import React, {Component} from 'react'
-import {StyleSheet} from 'react-native'
+import {StyleSheet, Text} from 'react-native'
 import {getCurrentUser} from '../utils'
 
 class MainScreen extends Component {
   constructor(props) {
     super(props)
-    // TODO state
+    this.state = {
+      name: undefined,
+    }
   }
 
   componentDidMount = () => {
