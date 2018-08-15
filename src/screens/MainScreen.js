@@ -7,6 +7,8 @@ import {
   Platform,
   ActivityIndicator,
   NativeModules,
+  Animated,
+  Dimensions,
 } from 'react-native'
 import Sound from 'react-native-sound'
 
@@ -20,11 +22,19 @@ class MainScreen extends Component {
       playbackInitDone: false,
       isPlaying: false,
       startedPlaying: false,
+      animation: new Animated.Value(-Dimensions.get('screen').width),
     }
+    this.containerRef = React.createRef()
+    this.animation = Animated.loop(
+      Animated.timing(this.state.animation, {
+        toValue: Dimensions.get('screen').width,
+        duration: 5000, // uniform duration - slower anim. on large screens (hopefully noone cares)
+        useNativeDriver: true, // android emulator animation stuttered horribly without this
+      })
+    )
   }
 
   componentDidMount = () => {
-    console.log(NativeModules)
     getCurrentUser()
       .then((user) => {
         if (!user) {
@@ -40,7 +50,7 @@ class MainScreen extends Component {
 
     Sound.setCategory('Playback')
     this.unicornTrack = new Sound(
-      'https://ucd352221a91bc4764efcda555ab.previews.dropboxusercontent.com/p/orig/AALtU30Tni2t4FGO2tX6xv8oTlC1OOphZOmM5XOQGLhP-2iz5_gelJ0Cx_8qVbch5Ief-AQ8_SrsdMyNw8HhEcszyMBvrDe6IKUIZd2f_yMB_U7Jq8tIsuNQB_jzYI0XlyOClqokbZIQrHXcvqzT6fYJ/p.mp3',
+      'https://www.dropbox.com/s/zrl1jsdk29qdv5r/Pink%20Fluffy%20Unicorns%20Dancing%20on%20Rainbows%20-%20Fluffle%20Puff%20.mp3?raw=1',
       null,
       (error) => {
         if (error) {
@@ -56,9 +66,28 @@ class MainScreen extends Component {
     )
   }
 
+  dimensionChangeHandler = (dimensions) => {
+    // reset the animation with correct dimensions i.e. when we rotate the device
+    // duration kept the same so the animation is slower on horizontal direction ¯\_(ツ)_/¯
+    this.animation.stop()
+    this.setState({animation: new Animated.Value(-dimensions.width)})
+    this.animation = Animated.loop(
+      Animated.timing(this.state.animation, {
+        toValue: Dimensions.get('screen').width,
+        duration: 5000,
+      })
+    )
+    if (this.state.isPlaying) this.animation.start()
+  }
+
+  componentWillUnmount = () => {
+    Dimensions.removeEventListener('change')
+  }
+
   startPlayback = () => {
     this.unicornTrack.play((success) => {
       if (success) {
+        // callback called when playback finishes - loop on ios
         if (Platform.OS === 'ios') {
           this.startPlayback()
         } else {
@@ -73,16 +102,19 @@ class MainScreen extends Component {
       }
     })
     this.setState({isPlaying: true, startedPlaying: true})
+    this.animation.start()
   }
 
   pausePlayback = () => {
     this.unicornTrack.pause()
     this.setState({isPlaying: false})
+    this.animation.stop()
   }
 
   stopPlayback = () => {
     this.unicornTrack.stop()
     this.setState({isPlaying: false, startedPlaying: false})
+    this.animation.stop()
   }
 
   playButtonPress = () => {
@@ -101,12 +133,16 @@ class MainScreen extends Component {
 
   // text'll be empty on first render, which shouldn't be something too noticeable
   render = () => (
-    <View>
-      <Text>{this.state.name ? `Welcome ${this.state.name} to 🦄 paradise!` : ''}</Text>
+    <View ref={this.containerRef} style={{alignItems: 'center'}}>
+      <Text style={{textAlign: 'center'}}>
+        {this.state.name ? `Welcome ${this.state.name} to 🦄 paradise!` : ''}
+      </Text>
       {this.state.networkError ? (
-        <Text>😭 Failed to load the 🦄 song (Network Problems?) 😭 </Text>
+        <Text style={{textAlign: 'center'}}>
+          😭 Failed to load the 🦄 song (Network Problems?) 😭{' '}
+        </Text>
       ) : (
-        <View>
+        <View style={{flexDirection: 'row'}}>
           {this.state.startedPlaying && !this.state.playbackInitDone ? (
             <ActivityIndicator size="small" />
           ) : (
@@ -115,6 +151,14 @@ class MainScreen extends Component {
           <Button onPress={this.stopPlayback} title="▇" disabled={!this.state.startedPlaying} />
         </View>
       )}
+      <Animated.Text
+        style={{
+          textAlign: 'center',
+          transform: [{translateX: this.state.isPlaying ? this.state.animation : 0}],
+        }}
+      >
+        🦄🦄🦄
+      </Animated.Text>
       <Button onPress={this.logout} title="Logout" />
     </View>
   )
