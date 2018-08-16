@@ -1,22 +1,19 @@
 import React, {Component} from 'react'
-import {
-  StyleSheet,
-  NativeModules,
-  Text,
-  View,
-  TextInput,
-  Button,
-  ActivityIndicator,
-} from 'react-native'
+import {Text, View, TextInput, Button, ActivityIndicator} from 'react-native'
 import {
   getUsers,
   registerAndLoginUser,
   getEmailError,
   getPasswordError,
   getNameError,
+  logoutUser,
 } from '../utils'
 
 class RegisterScreen extends Component {
+  static navigationOptions = {
+    title: 'Register',
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -25,11 +22,16 @@ class RegisterScreen extends Component {
   }
 
   componentDidMount = () => {
+    // as register should be the first screen we see and there was no requirement to persist login
+    // we get rid of login from previous run (but it could be used to login automatically)
+    logoutUser().catch((e) => {
+      // TODO notify user ?
+      console.log(e)
+    })
     // since there's no way anyone else can insert users while the component stays mounted
     // (unless an error would occur in registerAndLoginUser but then somethings horribly broken anyway)
     getUsers()
       .then((users) => {
-        console.log(users)
         this.setState({users, working: false})
       })
       .catch((e) => {

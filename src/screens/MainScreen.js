@@ -12,9 +12,13 @@ import {
 } from 'react-native'
 import Sound from 'react-native-sound'
 
-import {getCurrentUser, logoutUser} from '../utils'
+import {getCurrentUser, logoutUser, resetNavAction} from '../utils'
 
 class MainScreen extends Component {
+  static navigationOptions = {
+    title: 'Welcome',
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -127,7 +131,7 @@ class MainScreen extends Component {
 
   logout = async () => {
     await logoutUser()
-    this.props.navigation.replace('LoginScreen')
+    this.props.navigation.dispatch(resetNavAction('RegisterScreen'))
     NativeModules.RNTAlert.showAlert()
   }
 

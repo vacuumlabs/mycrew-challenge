@@ -1,5 +1,6 @@
 import SecureStorage from 'react-native-secure-storage'
 import bcrypt from 'react-native-bcrypt'
+import {NavigationActions, StackActions} from 'react-navigation'
 import {promisify} from 'es6-promisify'
 
 // TODO config bcrypt with secure random
@@ -43,6 +44,12 @@ export const loginUser = async (email, pass) => {
 }
 
 export const logoutUser = async () => await SecureStorage.removeItem('currentUser')
+
+export const resetNavAction = (screen) =>
+  StackActions.reset({
+    index: 0,
+    actions: [NavigationActions.navigate({routeName: screen})],
+  })
 
 // validations
 
