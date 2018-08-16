@@ -27,11 +27,11 @@ class MainScreen extends Component {
       playbackInitDone: false,
       isPlaying: false,
       startedPlaying: false,
-      animation: new Animated.Value(-Dimensions.get('screen').width),
+      animation: new Animated.Value(Dimensions.get('screen').width),
     }
     this.animation = Animated.loop(
       Animated.timing(this.state.animation, {
-        toValue: Dimensions.get('screen').width,
+        toValue: -Dimensions.get('screen').width,
         duration: ANIMATION_DURATION, // uniform duration - slower anim. on large screens (hopefully noone cares)
         // android emulator animation stuttered horribly without this - on ios it can cause weird jumps in interaction with audio playback .. ¯\_(ツ)_/¯
         useNativeDriver: Platform.select({android: true, default: false}),
@@ -75,10 +75,10 @@ class MainScreen extends Component {
     // reset the animation with correct dimensions i.e. when we rotate the device
     // duration kept the same so the animation is slower on horizontal direction ¯\_(ツ)_/¯
     this.animation.stop()
-    this.setState({animation: new Animated.Value(-dimensions.width)})
+    this.setState({animation: new Animated.Value(dimensions.width)})
     this.animation = Animated.loop(
       Animated.timing(this.state.animation, {
-        toValue: Dimensions.get('screen').width,
+        toValue: -dimensions.width,
         duration: ANIMATION_DURATION,
       })
     )
