@@ -13,6 +13,7 @@ import Sound from 'react-native-sound'
 
 import {getCurrentUser, logoutUser, resetNavAction} from '../utils'
 import styles from '../styles'
+import {ANIMATION_DURATION} from '../constants'
 
 class MainScreen extends Component {
   static navigationOptions = {
@@ -31,7 +32,7 @@ class MainScreen extends Component {
     this.animation = Animated.loop(
       Animated.timing(this.state.animation, {
         toValue: Dimensions.get('screen').width,
-        duration: 5000, // uniform duration - slower anim. on large screens (hopefully noone cares)
+        duration: ANIMATION_DURATION, // uniform duration - slower anim. on large screens (hopefully noone cares)
         // android emulator animation stuttered horribly without this - on ios it can cause weird jumps in interaction with audio playback .. ¯\_(ツ)_/¯
         useNativeDriver: Platform.select({android: true, default: false}),
       })
@@ -78,7 +79,7 @@ class MainScreen extends Component {
     this.animation = Animated.loop(
       Animated.timing(this.state.animation, {
         toValue: Dimensions.get('screen').width,
-        duration: 5000,
+        duration: ANIMATION_DURATION,
       })
     )
     if (this.state.isPlaying) this.animation.start()

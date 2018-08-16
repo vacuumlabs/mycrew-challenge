@@ -1,13 +1,6 @@
 import React, {Component} from 'react'
-import {StyleSheet, Text, View, TextInput, Button, ActivityIndicator} from 'react-native'
-import {
-  loginUser,
-  getEmailError,
-  getPasswordError,
-  getCurrentUser,
-  getUsers,
-  resetNavAction,
-} from '../utils'
+import {Text, View, TextInput, Button, ActivityIndicator} from 'react-native'
+import {loginUser, getEmailError, getPasswordError, resetNavAction} from '../utils'
 import styles from '../styles'
 
 class LoginScreen extends Component {

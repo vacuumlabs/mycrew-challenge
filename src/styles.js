@@ -1,7 +1,5 @@
 import {StyleSheet} from 'react-native'
 
-// TODO move styles here
-
 export default StyleSheet.create({
   container: {
     padding: 20,
