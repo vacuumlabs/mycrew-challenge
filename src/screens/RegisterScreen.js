@@ -8,6 +8,7 @@ import {
   getNameError,
   logoutUser,
 } from '../utils'
+import styles from '../styles'
 
 class RegisterScreen extends Component {
   static navigationOptions = {
@@ -53,38 +54,47 @@ class RegisterScreen extends Component {
     const nameError = getNameError(this.state.name)
     const hasErrors = !!(emailError || passError || nameError)
     return (
-      <View style={{padding: 20}}>
+      <View style={styles.container}>
         <TextInput
-          style={{height: 40, padding: 5, borderColor: 'gray', borderWidth: 1}}
+          style={styles.textField}
           placeholder="Email"
           onChangeText={(email) => this.setState({email})}
           onBlur={() => this.setState({emailTouched: true})}
           value={this.state.text}
         />
-        <Text style={{color: 'red'}}>{this.state.emailTouched && (emailError || '')}</Text>
+        <Text style={styles.errorText}>{this.state.emailTouched && (emailError || '')}</Text>
         <TextInput
-          style={{height: 40, padding: 5, borderColor: 'gray', borderWidth: 1}}
+          style={styles.textField}
           placeholder="Password"
           secureTextEntry
           onChangeText={(pass) => this.setState({pass})}
           onBlur={() => this.setState({passTouched: true})}
           value={this.state.text}
         />
-        <Text style={{color: 'red'}}>{this.state.passTouched && (passError || '')}</Text>
+        <Text style={styles.errorText}>{this.state.passTouched && (passError || '')}</Text>
         <TextInput
-          style={{height: 40, padding: 5, borderColor: 'gray', borderWidth: 1}}
+          style={styles.textField}
           placeholder="Name"
           onChangeText={(name) => this.setState({name})}
           onBlur={() => this.setState({nameTouched: true})}
           value={this.state.text}
         />
-        <Text style={{color: 'red'}}>{this.state.nameTouched && (nameError || '')}</Text>
+        <Text style={styles.errorText}>{this.state.nameTouched && (nameError || '')}</Text>
         {this.state.working ? (
           <ActivityIndicator size="small" />
         ) : (
-          <Button onPress={this.register} disabled={hasErrors} title="Register" />
+          <Button
+            style={styles.button}
+            onPress={this.register}
+            disabled={hasErrors}
+            title="Register"
+          />
         )}
-        <Button onPress={() => this.props.navigation.push('LoginScreen')} title="Login" />
+        <Button
+          style={styles.button}
+          onPress={() => this.props.navigation.push('LoginScreen')}
+          title="Login"
+        />
       </View>
     )
   }

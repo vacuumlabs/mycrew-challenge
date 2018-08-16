@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {
-  StyleSheet,
   Text,
   Button,
   View,
@@ -13,10 +12,11 @@ import {
 import Sound from 'react-native-sound'
 
 import {getCurrentUser, logoutUser, resetNavAction} from '../utils'
+import styles from '../styles'
 
 class MainScreen extends Component {
   static navigationOptions = {
-    title: 'Welcome',
+    title: 'Welcome!',
   }
 
   constructor(props) {
@@ -28,12 +28,12 @@ class MainScreen extends Component {
       startedPlaying: false,
       animation: new Animated.Value(-Dimensions.get('screen').width),
     }
-    this.containerRef = React.createRef()
     this.animation = Animated.loop(
       Animated.timing(this.state.animation, {
         toValue: Dimensions.get('screen').width,
         duration: 5000, // uniform duration - slower anim. on large screens (hopefully noone cares)
-        useNativeDriver: true, // android emulator animation stuttered horribly without this
+        // android emulator animation stuttered horribly without this - on ios it can cause weird jumps in interaction with audio playback .. ¯\_(ツ)_/¯
+        useNativeDriver: Platform.select({android: true, default: false}),
       })
     )
   }
@@ -137,22 +137,30 @@ class MainScreen extends Component {
 
   // text'll be empty on first render, which shouldn't be something too noticeable
   render = () => (
-    <View ref={this.containerRef} style={{alignItems: 'center'}}>
-      <Text style={{textAlign: 'center'}}>
+    <View style={styles.mainContainer}>
+      <Text style={styles.title}>
         {this.state.name ? `Welcome ${this.state.name} to 🦄 paradise!` : ''}
       </Text>
       {this.state.networkError ? (
-        <Text style={{textAlign: 'center'}}>
-          😭 Failed to load the 🦄 song (Network Problems?) 😭{' '}
-        </Text>
+        <Text style={styles.otherText}>😭 Failed to load the 🦄 song (Network Problems?) 😭</Text>
       ) : (
         <View style={{flexDirection: 'row'}}>
           {this.state.startedPlaying && !this.state.playbackInitDone ? (
             <ActivityIndicator size="small" />
           ) : (
-            <Button onPress={this.playButtonPress} title={this.state.isPlaying ? '▊▊' : '▶'} />
+            // pause sign looks poorly on iOs, but this was a cheap way to do it quickly with proper disabled states
+            <Button
+              style={styles.button}
+              onPress={this.playButtonPress}
+              title={this.state.isPlaying ? '▊▊' : '▶'}
+            />
           )}
-          <Button onPress={this.stopPlayback} title="▇" disabled={!this.state.startedPlaying} />
+          <Button
+            style={styles.button}
+            onPress={this.stopPlayback}
+            title="▇"
+            disabled={!this.state.startedPlaying}
+          />
         </View>
       )}
       <Animated.Text
@@ -163,7 +171,7 @@ class MainScreen extends Component {
       >
         🦄🦄🦄
       </Animated.Text>
-      <Button onPress={this.logout} title="Logout" />
+      <Button style={styles.button} onPress={this.logout} title="Logout" />
     </View>
   )
 }

@@ -8,6 +8,7 @@ import {
   getUsers,
   resetNavAction,
 } from '../utils'
+import styles from '../styles'
 
 class LoginScreen extends Component {
   static navigationOptions = {
@@ -35,30 +36,30 @@ class LoginScreen extends Component {
     const passError = getPasswordError(this.state.pass)
     const hasErrors = !!(emailError || passError)
     return (
-      <View style={{padding: 20}}>
+      <View style={styles.container}>
         <TextInput
-          style={{height: 40, padding: 5, borderColor: 'gray', borderWidth: 1}}
+          style={styles.textField}
           placeholder="Email"
           onChangeText={(email) => this.setState({email})}
           onBlur={() => this.setState({emailTouched: true})}
           value={this.state.text}
         />
-        <Text style={{color: 'red'}}>{this.state.emailTouched && (emailError || '')}</Text>
+        <Text style={styles.errorText}>{this.state.emailTouched && (emailError || '')}</Text>
         <TextInput
-          style={{height: 40, padding: 5, borderColor: 'gray', borderWidth: 1}}
+          style={styles.textField}
           placeholder="Password"
           secureTextEntry
           onChangeText={(pass) => this.setState({pass})}
           onBlur={() => this.setState({passTouched: true})}
           value={this.state.text}
         />
-        <Text style={{color: 'red'}}>
+        <Text style={styles.errorText}>
           {(this.state.passTouched && passError) || this.state.passValidationError || ''}
         </Text>
         {this.state.working ? (
           <ActivityIndicator size="small" />
         ) : (
-          <Button onPress={this.login} disabled={hasErrors} title="Login" />
+          <Button style={styles.button} onPress={this.login} disabled={hasErrors} title="Login" />
         )}
       </View>
     )
