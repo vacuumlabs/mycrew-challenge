@@ -94,6 +94,9 @@ class MainScreen extends Component {
       }
     })
     this.setState({isPlaying: true, startedPlaying: true})
+    // unicorns will scroll even when the song is still loading - this is the same
+    // behaviour as in many audio players (with song names), so hopefully that's according
+    // to specs
     this.animation.start()
   }
 
