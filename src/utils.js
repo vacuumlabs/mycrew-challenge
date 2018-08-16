@@ -57,6 +57,7 @@ export const resetNavAction = (screen) =>
 export const getEmailError = (email, users) => {
   if (!email) return 'Please enter an email address'
   const lowerCaseMail = email.toLowerCase()
+  // super basic check, as the email address standards are quite lax
   const emailRegex = /^\S+@\S+/
   if (!emailRegex.test(lowerCaseMail)) return 'Please enter a valid email'
   if (users && users[lowerCaseMail]) return 'That email is already taken'
@@ -65,11 +66,15 @@ export const getEmailError = (email, users) => {
 
 export const getPasswordError = (pass) => {
   if (!pass || pass.length < 6) return 'Please enter password with at least 6 characters'
+  const alphanumericRegex = /^[a-zA-Z0-9]*$/
+  if (!alphanumericRegex.test(pass)) return 'Password must contain only numbers and letters'
   return false
 }
 
 export const getNameError = (name) => {
   if (!name || name.length === 0) return 'Please enter your name'
+  const alphaRegex = /^[a-zA-Z]*$/
+  if (!alphaRegex.test(name)) return 'Name must contain only letters'
   return false
 }
 

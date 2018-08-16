@@ -71,22 +71,9 @@ class MainScreen extends Component {
     )
   }
 
-  dimensionChangeHandler = (dimensions) => {
-    // reset the animation with correct dimensions i.e. when we rotate the device
-    // duration kept the same so the animation is slower on horizontal direction ¯\_(ツ)_/¯
-    this.animation.stop()
-    this.setState({animation: new Animated.Value(dimensions.width)})
-    this.animation = Animated.loop(
-      Animated.timing(this.state.animation, {
-        toValue: -dimensions.width,
-        duration: ANIMATION_DURATION,
-      })
-    )
-    if (this.state.isPlaying) this.animation.start()
-  }
-
   componentWillUnmount = () => {
-    Dimensions.removeEventListener('change')
+    this.unicornTrack.stop()
+    this.unicornTrack.release()
   }
 
   startPlayback = () => {
